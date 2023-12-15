@@ -3,11 +3,14 @@ package com.example.a7minutesworkout
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.example.a7minutesworkout.databinding.ActivityExerciseBinding
+import java.util.Locale
 
-class ExerciseActivity : AppCompatActivity() {
+class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
     private var binding:ActivityExerciseBinding?=null
     private var restTimer: CountDownTimer?=null
     private var restProgress=0
@@ -17,11 +20,15 @@ class ExerciseActivity : AppCompatActivity() {
 
     var exerciseList:ArrayList<ExerciseModel>?=null
     var currentExercisePosition=-1
+
+    private var textToSpeech: TextToSpeech?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
        binding=ActivityExerciseBinding.inflate(layoutInflater)
         setContentView(binding?.root)
+
+        textToSpeech=TextToSpeech(this,this)
 
         setSupportActionBar(binding?.exerciseTB)
         if (supportActionBar != null){
@@ -41,11 +48,17 @@ class ExerciseActivity : AppCompatActivity() {
         binding?.tvExercise?.visibility=View.INVISIBLE
         binding?.ivImage?.visibility=View.INVISIBLE
 
+        binding?.tvUpcoming?.visibility=View.VISIBLE
+        binding?.tvUpcomingExerciseName?.visibility=View.VISIBLE
+
+
+
         if(restTimer!=null){
             restTimer?.cancel()
             restProgress=0
         }
         setRestProgressbar()
+
     }
     private  fun setRestExerciseView(){
         binding?.FLtoolbar?.visibility=View.INVISIBLE
@@ -54,12 +67,19 @@ class ExerciseActivity : AppCompatActivity() {
         binding?.tvExercise?.visibility=View.VISIBLE
         binding?.ivImage?.visibility=View.VISIBLE
 
+        binding?.tvUpcoming?.visibility=View.INVISIBLE
+        binding?.tvUpcomingExerciseName?.visibility=View.INVISIBLE
+
         if(restExerciseTimer!=null){
             restExerciseTimer?.cancel()
             restExerciseProgressbar=0
         }
+
+        speakOut(exerciseList!![currentExercisePosition].getName())
         binding?.ivImage?.setImageResource(exerciseList!![currentExercisePosition].getImage())
         binding?.tvExercise?.text=exerciseList!![currentExercisePosition].getName()
+
+
         setExerciseProgressbar()
     }
     private fun setExerciseProgressbar(){
@@ -77,7 +97,8 @@ class ExerciseActivity : AppCompatActivity() {
                   setRestView()
               }
                 else{
-                    Toast.makeText(this@ExerciseActivity,"Exercises Completed",Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@ExerciseActivity,"Exercises Completed",
+                        Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -90,7 +111,11 @@ class ExerciseActivity : AppCompatActivity() {
                 restProgress++
                 binding?.progressBAr?.progress = 10 - restProgress
                 binding?.TvTimer?.text=(10-restProgress).toString()
+                binding?.tvUpcomingExerciseName?.text=exerciseList!![currentExercisePosition +1].getName()
+
+
             }
+
 
 
             override fun onFinish() {
@@ -100,6 +125,9 @@ class ExerciseActivity : AppCompatActivity() {
             }
 
         }.start()
+    }
+    private fun speakOut(text : String){
+        textToSpeech?.speak(text,TextToSpeech.QUEUE_FLUSH,null,"")
     }
 
     override fun onDestroy() {
@@ -112,8 +140,27 @@ class ExerciseActivity : AppCompatActivity() {
             restExerciseTimer?.cancel()
             restExerciseProgressbar=0
         }
+        if(textToSpeech != null) {
+            textToSpeech?.stop()
+            textToSpeech?.shutdown()
+        }
         binding=null
     }
+    override fun onInit(status: Int) {
+        if(status==TextToSpeech.SUCCESS){
+            val result=textToSpeech?.setLanguage(Locale.UK)
+            if(result == TextToSpeech.LANG_MISSING_DATA ||
+                result == TextToSpeech.LANG_NOT_SUPPORTED){
+                Log.e("TTS","Language is not Supported")
+            }
+            else{
+                Log.e("TTS","Cant Initialized")
+            }
+        }
+    }
+
+
+
 }
 
 
