@@ -1,5 +1,7 @@
 package com.example.a7minutesworkout
 
+import android.media.MediaPlayer
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -22,6 +24,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
     var currentExercisePosition=-1
 
     private var textToSpeech: TextToSpeech?=null
+    private var player:MediaPlayer?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -42,6 +45,17 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
         exerciseList=Constants.defaultExerciseList()
     }
     private fun setRestView(){
+        try {
+            val soundURI=Uri.parse(
+                "android.resource://com.example.a7minutesworkout/" + R.raw.press_start)
+            player=MediaPlayer.create(applicationContext, soundURI)
+            player?.isLooping=false
+            player?.start()
+        }
+        catch (e:Exception){
+            e.printStackTrace()
+        }
+
         binding?.FLtoolbar?.visibility=View.VISIBLE
         binding?.TVtoolbar?.visibility=View.VISIBLE
         binding?.FLExercisetoolbar?.visibility=View.INVISIBLE
@@ -61,6 +75,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
 
     }
     private  fun setRestExerciseView(){
+
         binding?.FLtoolbar?.visibility=View.INVISIBLE
         binding?.TVtoolbar?.visibility=View.INVISIBLE
         binding?.FLExercisetoolbar?.visibility=View.VISIBLE
@@ -83,6 +98,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
         setExerciseProgressbar()
     }
     private fun setExerciseProgressbar(){
+
         binding?.ExerciseprogressBAr?.progress=restExerciseProgressbar
         restExerciseTimer= object : CountDownTimer(30000,1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -141,8 +157,11 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
             restExerciseProgressbar=0
         }
         if(textToSpeech != null) {
-            textToSpeech?.stop()
-            textToSpeech?.shutdown()
+            textToSpeech!!.stop()
+            textToSpeech!!.shutdown()
+        }
+        if(player!=null){
+            player!!.stop()
         }
         binding=null
     }
