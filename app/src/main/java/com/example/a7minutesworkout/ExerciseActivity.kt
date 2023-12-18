@@ -1,5 +1,6 @@
 package com.example.a7minutesworkout
 
+import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -113,7 +114,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
     private fun setExerciseProgressbar(){
 
         binding?.ExerciseprogressBAr?.progress=restExerciseProgressbar
-        restExerciseTimer= object : CountDownTimer(30000,1000) {
+        restExerciseTimer= object : CountDownTimer(3000,1000) {
             override fun onTick(millisUntilFinished: Long) {
                 restExerciseProgressbar++
                 binding?.ExerciseprogressBAr?.progress = 30 - restExerciseProgressbar
@@ -123,16 +124,18 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
 
             override fun onFinish() {
 
-                exerciseList!![currentExercisePosition].setIsSelected(false)
-                exerciseList!![currentExercisePosition].setIsCompleted(true)
-                exerciseAdapter!!.notifyDataSetChanged()
 
-              if(currentExercisePosition<=exerciseList?.size !! -1){
+
+              if(currentExercisePosition<exerciseList?.size !! -1){
+                  exerciseList!![currentExercisePosition].setIsSelected(false)
+                  exerciseList!![currentExercisePosition].setIsCompleted(true)
+                  exerciseAdapter!!.notifyDataSetChanged()
                   setRestView()
               }
                 else{
-                    Toast.makeText(this@ExerciseActivity,"Exercises Completed",
-                        Toast.LENGTH_LONG).show()
+                    finish()
+                  val intent=Intent(this@ExerciseActivity,FinishActivity::class.java)
+                  startActivity(intent)
                 }
             }
 
@@ -140,7 +143,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
     }
     private fun setRestProgressbar(){
         binding?.progressBAr?.progress=restProgress
-        restTimer= object : CountDownTimer(10000,1000) {
+        restTimer= object : CountDownTimer(1000,1000) {
             override fun onTick(millisUntilFinished: Long) {
                 restProgress++
                 binding?.progressBAr?.progress = 10 - restProgress
