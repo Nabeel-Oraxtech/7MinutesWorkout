@@ -43,10 +43,33 @@ class BMIActivity : AppCompatActivity() {
         }
 
         binding?.btnBMICalculator?.setOnClickListener{
+            calculateUnits()
+        }
+
+        //binding?.etMetricUnitWeight?.text=
+    }
+    private fun calculateUnits(){
+        if(currentVisibleView== METRIC_UNITS_VIEW){
             if(validateMetricUnits()){
                 val heightValue:Float=binding?.etMetricUnitHeight?.text.toString().toFloat()/100
                 val weightValue:Float=binding?.etMetricUnitWeight?.text.toString().toFloat()
                 val bmi=weightValue/(heightValue*heightValue)
+                displayBMiResult(bmi)
+            }
+
+            else{
+                Toast.makeText(this,"Enter Height and Weight First",Toast.LENGTH_LONG).show()
+            }
+        }
+        else{
+            if(validateUSUnits()){
+                val USUnitsheightValueFeet:String=binding?.etUSUniHeightFeet?.text.toString()
+                val USUnitsheightValueInch:String=binding?.etUSUniHeightInch?.text.toString()
+                val USUnitsweightValue:Float=binding?.etUSUnitWeight?.text.toString().toFloat()
+
+                val heightValue=USUnitsheightValueInch.toFloat() + USUnitsheightValueFeet.toFloat() * 12
+                val bmi=703*(USUnitsweightValue/(heightValue*heightValue))
+
                 displayBMiResult(bmi)
             }
             else{
@@ -54,7 +77,6 @@ class BMIActivity : AppCompatActivity() {
             }
         }
 
-        //binding?.etMetricUnitWeight?.text=
     }
     private fun makeVisibleMetricUnitView(){
         currentVisibleView= METRIC_UNITS_VIEW
@@ -137,4 +159,18 @@ class BMIActivity : AppCompatActivity() {
         }
         return validate
     }
+
+fun validateUSUnits():Boolean {
+    var validate = true
+
+    if (binding?.etUSUnitWeight?.text.toString().isEmpty()) {
+        validate = false
+    } else if (binding?.etUSUniHeightFeet?.text.toString().isEmpty()) {
+        validate = false
+    }
+    else if (binding?.etUSUniHeightInch?.text.toString().isEmpty()) {
+        validate = false
+    }
+    return validate
+}
 }

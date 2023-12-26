@@ -19,6 +19,12 @@
         android:theme="@style/Theme._7MinutesWorkout"
         tools:targetApi="31">
         <activity
+            android:name=".HistoryActivit"
+            android:exported="false" />
+        <activity
+            android:name=".HistoryActivtiy"
+            android:exported="false" />
+        <activity
             android:name=".BMIActivity"
             android:exported="false" />
         <activity
