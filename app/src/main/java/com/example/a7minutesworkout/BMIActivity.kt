@@ -11,10 +11,10 @@ import java.math.RoundingMode
 class BMIActivity : AppCompatActivity() {
 
     companion object{
-        private const val METRIC_UNIT_VIEW="METRIC_UNIT_VIEW"
-        private const val US_UNIT_VIEW="US_UNIT_VIEW"
+        private const val METRIC_UNITS_VIEW="METRIC_UNIT_VIEW"
+        private const val US_UNITS_VIEW="US_UNIT_VIEW"
     }
-    private var currentVisibleView:String= METRIC_UNIT_VIEW
+    private var currentVisibleView:String= METRIC_UNITS_VIEW
     private var binding:ActivityBmiBinding?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,16 +23,28 @@ class BMIActivity : AppCompatActivity() {
         setContentView(binding?.root)
 
         setSupportActionBar(binding?.toolbarBmi)
-        if (supportActionBar != null){
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.title="BMI Calculator"
-        }
+
         binding?.toolbarBmi?.setNavigationOnClickListener{
             onBackPressed()
         }
+
+        makeVisibleMetricUnitView()
+
+        binding?.rgUnits?.setOnCheckedChangeListener{_,checkedID:Int ->
+
+            if(checkedID==R.id.rbMetricUnits){
+                makeVisibleMetricUnitView()
+            }
+            else{
+                makeVisibleUSUnitView()
+            }
+        }
+
         binding?.btnBMICalculator?.setOnClickListener{
             if(validateMetricUnits()){
-                val heightValue:Float=binding?.etMetricUniHeight?.text.toString().toFloat()/100
+                val heightValue:Float=binding?.etMetricUnitHeight?.text.toString().toFloat()/100
                 val weightValue:Float=binding?.etMetricUnitWeight?.text.toString().toFloat()
                 val bmi=weightValue/(heightValue*heightValue)
                 displayBMiResult(bmi)
@@ -44,8 +56,33 @@ class BMIActivity : AppCompatActivity() {
 
         //binding?.etMetricUnitWeight?.text=
     }
-    private fun makeVisibleMetricUnitview(){
+    private fun makeVisibleMetricUnitView(){
+        currentVisibleView= METRIC_UNITS_VIEW
+        binding?.titleMetricUnitWeight?.visibility=View.VISIBLE
+        binding?.titleMetricUnitHeight?.visibility=View.VISIBLE
+        binding?.titleUSUnitHeightInch?.visibility=View.GONE
+        binding?.titleUSUnitHeightFeet?.visibility=View.GONE
+        binding?.titleUsUnitWeight?.visibility = View.GONE
 
+        binding?.etMetricUnitHeight?.text!!.clear()
+        binding?.etMetricUnitWeight?.text!!.clear()
+
+        binding?.llDisplayBMIResult?.visibility=View.INVISIBLE
+    }
+
+    private fun makeVisibleUSUnitView(){
+        currentVisibleView= US_UNITS_VIEW
+        binding?.titleMetricUnitWeight?.visibility=View.INVISIBLE
+        binding?.titleMetricUnitHeight?.visibility=View.INVISIBLE
+        binding?.titleUSUnitHeightInch?.visibility=View.VISIBLE
+        binding?.titleUSUnitHeightFeet?.visibility=View.VISIBLE
+        binding?.titleUsUnitWeight?.visibility = View.VISIBLE
+
+        binding?.etUSUniHeightInch?.text!!.clear()
+        binding?.etUSUniHeightFeet?.text!!.clear()
+        binding?.etUSUnitWeight?.text!!.clear()
+
+        binding?.llDisplayBMIResult?.visibility=View.INVISIBLE
     }
 
     private fun displayBMiResult(bmi:Float){
@@ -95,7 +132,7 @@ class BMIActivity : AppCompatActivity() {
 
         if (binding?.etMetricUnitWeight?.text.toString().isEmpty()) {
             validate = false
-        } else if (binding?.etMetricUniHeight?.text.toString().isEmpty()) {
+        } else if (binding?.etMetricUnitHeight?.text.toString().isEmpty()) {
             validate = false
         }
         return validate

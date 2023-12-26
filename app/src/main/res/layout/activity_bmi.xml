@@ -66,7 +66,7 @@
             android:id="@+id/etMetricUnitWeight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="WEIGHT(in kg)"
+            android:hint="WEIGHT( in kg)"
             android:inputType="numberDecimal"
             android:textSize="16sp"/>
     </com.google.android.material.textfield.TextInputLayout>
@@ -82,13 +82,39 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/etMetricUniHeight"
+            android:id="@+id/etMetricUnitHeight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Height(in cm)"
             android:inputType="numberDecimal"
             android:textSize="16sp"/>
     </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_below="@id/rgUnits"
+        android:id="@+id/titleUsUnitWeight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:boxStrokeColor="@color/colorAccent"
+        app:hintTextColor="@color/colorAccent"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etUSUnitWeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="WEIGHT(in ponds)"
+            android:inputType="numberDecimal"
+            android:textSize="16sp"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/titleMetricUnitWeight"
+        android:layout_centerHorizontal="true" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_below="@id/titleMetricUnitWeight"
@@ -96,6 +122,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_toStartOf="@+id/view"
         app:boxStrokeColor="@color/colorAccent"
         app:hintTextColor="@color/colorAccent"
         android:layout_alignParentStart="true"
@@ -113,6 +140,7 @@
             android:textSize="16sp"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_below="@id/titleMetricUnitWeight"
         android:id="@+id/titleUSUnitHeightInch"
@@ -122,6 +150,7 @@
         app:boxStrokeColor="@color/colorAccent"
         app:hintTextColor="@color/colorAccent"
         android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/view"
         android:visibility="gone"
         tools:visibility="visible"
         android:layout_margin="10dp"
@@ -192,7 +221,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:text="CALCLATE"
+        android:text="CALCULATE"
         android:layout_marginTop="35dp"
         android:textSize="18sp"
         android:backgroundTint="@color/colorAccent"/>
